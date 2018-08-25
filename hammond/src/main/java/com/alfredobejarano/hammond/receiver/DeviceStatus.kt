@@ -24,5 +24,21 @@ enum class DeviceStatus {
     /**
      * The device is connected but permissions for access to it need to be granted.
      */
-    STATUS_PERMISSION_NEEDED
+    STATUS_PERMISSION_NEEDED,
+    /**
+     * The device interface can be retrieved.
+     */
+    STATUS_INTERFACE_FAILED,
+    /**
+     * The device IO endpoints cant be retrieved.
+     */
+    STATUS_ENDPOINTS_FAILED,
+    /**
+     * The device can't be opened.
+     */
+    STATUS_OPEN_FAILED,
+    /**
+     * A connection to the device has failed.
+     */
+    STATUS_CONNECTION_FAILED
 }
