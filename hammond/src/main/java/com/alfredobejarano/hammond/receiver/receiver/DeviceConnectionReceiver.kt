@@ -88,6 +88,7 @@ class DeviceConnectionReceiver : BroadcastReceiver() {
             // Request permissions for the connected device.
             requestPermissionsForDevice(FingerprintReader.usbDevice)
         } else { // Report a status for a device being disconnected and no other supported one is connected.
+            FingerprintReader.close()
             FingerprintReader.status.postValue(DeviceStatus.STATUS_DISCONNECTED)
         }
     }
