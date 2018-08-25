@@ -1,7 +1,6 @@
 package com.alfredobejarano.hammond.receiver.model
 
 import android.hardware.usb.UsbDevice
-import com.alfredobejarano.hammond.receiver.FingerprintReader
 
 /**
  * Helper class that checks if a device is supported or not.
@@ -19,8 +18,6 @@ class Device {
          * @return A [Device] class.
          */
         fun isSupported(device: UsbDevice?): Boolean {
-            // Set the USB device for the Fingerprint Singleton.
-            FingerprintReader.usbDevice = device
             // Return a device model if the device matches one of the supported devices.
             return supportedProductIds.contains(device?.productId) &&
                     supportedVersionIds.contains(device?.vendorId)

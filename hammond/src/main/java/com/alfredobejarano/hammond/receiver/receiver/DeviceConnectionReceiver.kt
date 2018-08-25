@@ -99,6 +99,7 @@ class DeviceConnectionReceiver : BroadcastReceiver() {
     private fun validatePermissionRequestResult() = synchronized(this) {
         // Get the UsbDevice from the intent.
         val device: UsbDevice? = mIntent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
+        // Check if the USB permission has been granted.
         if (mIntent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
             device?.apply {
                 // Set the USB device for the Fingerprint reader.
@@ -119,10 +120,18 @@ class DeviceConnectionReceiver : BroadcastReceiver() {
     private fun requestPermissionsForDevice(usbDevice: UsbDevice?) {
         // Retrieve the UsbManager from the system services.
         val manager = mContext.getSystemService(Context.USB_SERVICE) as UsbManager?
-        // Build a PendingIntent for requesting access permissions for a given device.
-        val permissionsIntent = PendingIntent.getBroadcast(mContext, 0,
-                Intent(DeviceConnectionReceiver.ACTION_USB_PERMISSION), 0)
-        // Use the UsbManager to request the permissions.
-        manager?.requestPermission(usbDevice, permissionsIntent)
+        // Check if the USB device has already a permission given.
+        if (manager?.hasPermission(usbDevice) == true) {
+            // Set the USB device for the Fingerprint reader.
+            FingerprintReader.usbDevice = usbDevice
+            // We know the device status, so the device is ready to use.
+            FingerprintReader.status.postValue(DeviceStatus.STATUS_READY)
+        } else {
+            // Build a PendingIntent for requesting access permissions for a given device.
+            val permissionsIntent = PendingIntent.getBroadcast(mContext, 0,
+                    Intent(DeviceConnectionReceiver.ACTION_USB_PERMISSION), 0)
+            // Use the UsbManager to request the permissions.
+            manager?.requestPermission(usbDevice, permissionsIntent)
+        }
     }
 }
