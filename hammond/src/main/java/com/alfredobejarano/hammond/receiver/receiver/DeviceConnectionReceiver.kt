@@ -9,6 +9,15 @@ import android.hardware.usb.UsbManager
 import com.alfredobejarano.hammond.receiver.DeviceStatus
 import com.alfredobejarano.hammond.receiver.FingerprintReader
 
+/**
+ * Simple [BroadcastReceiver] class that detects when a
+ * USB device gets connected or disconnected and when a
+ * USB device usage permission request gets prompted.
+ *
+ * @author Alfredo Bejarano
+ * @since August 24th, 2018 - 06:00 PM
+ * @version 1.0
+ */
 class DeviceConnectionReceiver : BroadcastReceiver() {
     companion object {
         /**
