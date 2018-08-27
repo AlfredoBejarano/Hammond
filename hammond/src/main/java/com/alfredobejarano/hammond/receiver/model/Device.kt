@@ -97,9 +97,11 @@ class Device {
         private fun assignConnection(connection: UsbDeviceConnection?) = if (connection == null) {
             // If the connection is null, it means the connection could not been opened.
             FingerprintReader.status.postValue(DeviceStatus.STATUS_OPEN_FAILED)
+            false
         } else {
             // If not, assign this sensor connection.
             FingerprintReader.usbDeviceConnection = connection
+            true
         }
 
         /**
@@ -109,7 +111,7 @@ class Device {
          *
          * If a step fails, the status is reported to the [FingerprintReader].
          */
-        fun attemptConnection(usbManager: UsbManager?, intf: UsbInterface?) {
+        fun attemptConnection(usbManager: UsbManager?, intf: UsbInterface?): Boolean {
             // Check if the device interface was retrieved and it contains some endpoints within it.
             if (Device.isDeviceInterfaceUsable(intf)) {
                 // Assign this interface as the Fingerprint interface.
@@ -123,14 +125,16 @@ class Device {
                     // Now, retrieve a connection to the device.
                     val connection = usbManager?.openDevice(FingerprintReader.usbDevice)
                     // Check the status of the connection.
-                    assignConnection(connection)
+                    return assignConnection(connection)
                 } else {
                     // If those endpoints are not usable, report the status of the sensor.
                     FingerprintReader.status.postValue(DeviceStatus.STATUS_ENDPOINTS_FAILED)
+                    return false
                 }
             } else {
                 // If not, report that the interface cant be used.
                 FingerprintReader.status.postValue(DeviceStatus.STATUS_INTERFACE_FAILED)
+                return false
             }
         }
     }
