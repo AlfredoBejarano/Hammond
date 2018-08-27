@@ -40,5 +40,17 @@ enum class DeviceStatus {
     /**
      * A connection to the device has failed.
      */
-    STATUS_CONNECTION_FAILED
+    STATUS_CONNECTION_FAILED,
+    /**
+     * Status that defines that something went wrong while calling the device's C++ libraries.
+     */
+    STATUS_LOW_LEVEL_INTERFACE_ERROR,
+    /**
+     * Enum value that defines the fingerprint sensor is currently scanning.
+     */
+    STATUS_SCANNING,
+    /**
+     * Defines that an error happened within the sensor while scanning.
+     */
+    STATUS_SENSOR_ERROR
 }
