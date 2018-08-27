@@ -103,10 +103,8 @@ class DeviceConnectionReceiver : BroadcastReceiver() {
         // Check if the USB permission has been granted.
         if (mIntent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
             device?.apply {
-                // Set the USB device for the Fingerprint reader.
-                FingerprintReader.usbDevice = device
-                // We know the device status, so the device is ready to use.
-                FingerprintReader.status.postValue(DeviceStatus.STATUS_READY)
+                // Open a connection to the usb device.
+                openFingerprintSensor(this)
             }
         } else {
             // Report that the permission has been denied, so the device is not usable.
@@ -123,10 +121,8 @@ class DeviceConnectionReceiver : BroadcastReceiver() {
         val manager = mContext.getSystemService(Context.USB_SERVICE) as UsbManager?
         // Check if the USB device has already a permission given.
         if (manager?.hasPermission(usbDevice) == true) {
-            // Set the USB device for the Fingerprint reader.
-            FingerprintReader.usbDevice = usbDevice
-            // We know the device status, so the device is ready to use.
-            FingerprintReader.status.postValue(DeviceStatus.STATUS_READY)
+            // Open a connection to the usb device.
+            openFingerprintSensor(usbDevice)
         } else {
             // Build a PendingIntent for requesting access permissions for a given device.
             val permissionsIntent = PendingIntent.getBroadcast(mContext, 0,
@@ -134,5 +130,18 @@ class DeviceConnectionReceiver : BroadcastReceiver() {
             // Use the UsbManager to request the permissions.
             manager?.requestPermission(usbDevice, permissionsIntent)
         }
+    }
+
+    /**
+     * Assigns a usb device to the [FingerprintReader] object
+     * and opens a connection to said usb device.
+     */
+    private fun openFingerprintSensor(usbDevice: UsbDevice?) {
+        // Set the USB device for the Fingerprint reader.
+        FingerprintReader.usbDevice = usbDevice
+        // Open a connection to the device.
+        FingerprintReader.open(mContext)
+        // We know the device status, so the device is ready to use.
+        FingerprintReader.status.postValue(DeviceStatus.STATUS_READY)
     }
 }
